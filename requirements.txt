@@ -1,0 +1,7 @@
+# Shared dependencies for all three interfaces
+# (ITOM_demand_interface, ITOM_Energy_Interface, ITOM_ETS_Interface)
+pandas
+numpy
+openpyxl
+pyyaml
+pillow  # keeps the images in the ITOM workbook's Info sheet

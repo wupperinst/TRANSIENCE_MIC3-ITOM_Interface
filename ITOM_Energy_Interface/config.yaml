@@ -1,0 +1,143 @@
+paths:
+  open_prom_excel: "OPEN-PROM-Baseline-2026.10.16.xlsx"
+  open_prom_price_sheet: "PricesIndustry"
+  itom_input_excel: "ITOM_Steel_TRANSIENCE_baseline0_input_MFA-update.xlsx"
+  itom_output_excel: "ITOM_Steel_TRANSIENCE_baseline0_input_MFA-Energy-update.xlsx"
+  output_relative_changes: "open_prom_relative_changes.csv"
+
+# Enable/disable intermediate CSV export for energy price indices
+export_intermediate_csv: true
+
+base_year: 2020
+years: [2020, 2025, 2030, 2035, 2040, 2045, 2050]
+
+conversion_settings:
+  usd_to_eur_2015: 0.901          # Wechselkurs USD -> EUR 2015
+  toe_to_gj: 41.868               # 1 toe = 41.868 GJ
+  # Multiplier: (1000 * usd_to_eur_2015) / toe_to_gj
+  k_usd2015_per_toe_to_eur_per_gj: 21.52
+
+columns:
+  model: "Model"
+  scenario: "Scenario"
+  region: "Region"
+  variable: "Variable"
+  unit: "Unit"
+
+# Country mapping (ISO-3 to ISO-2)
+country_mapping:
+  AUT: {code2: "AT", name: "Austria"}
+  BEL: {code2: "BE", name: "Belgium"}
+  BGR: {code2: "BG", name: "Bulgaria"}
+  HRV: {code2: "HR", name: "Croatia"}
+  CYP: {code2: "CY", name: "Cyprus"}
+  CZE: {code2: "CZ", name: "Czechia"}
+  DNK: {code2: "DK", name: "Denmark"}
+  EST: {code2: "EE", name: "Estonia"}
+  FIN: {code2: "FI", name: "Finland"}
+  FRA: {code2: "FR", name: "France"}
+  DEU: {code2: "DE", name: "Germany"}
+  GRC: {code2: "GR", name: "Greece"}
+  HUN: {code2: "HU", name: "Hungary"}
+  IRL: {code2: "IE", name: "Ireland"}
+  ITA: {code2: "IT", name: "Italy"}
+  LVA: {code2: "LV", name: "Latvia"}
+  LTU: {code2: "LT", name: "Lithuania"}
+  LUX: {code2: "LU", name: "Luxembourg"}
+  MLT: {code2: "MT", name: "Malta"}
+  NLD: {code2: "NL", name: "Netherlands"}
+  POL: {code2: "PL", name: "Poland"}
+  PRT: {code2: "PT", name: "Portugal"}
+  ROU: {code2: "RO", name: "Romania"}
+  SVK: {code2: "SK", name: "Slovakia"}
+  SVN: {code2: "SI", name: "Slovenia"}
+  ESP: {code2: "ES", name: "Spain"}
+  SWE: {code2: "SE", name: "Sweden"}
+  GBR: {code2: "GB", name: "United Kingdom"}
+# Carrier mapping for energy prices
+# Mapping OPEN-PROM variable names/energy carriers to ITOM target names
+# Key = Exact IAMC variable name in OPEN-PROM, Value = ITOM carrier name
+carrier_mapping:
+  "Price|Final Energy|Industry|Iron and Steel|Biomass and Waste": "Biomass"
+  "Price|Final Energy|Industry|Iron and Steel|Electricity":  "Electricity"
+  "Price|Final Energy|Industry|Iron and Steel|Hard Coal, Coke and Other Solids": "Coal"
+  "Price|Final Energy|Industry|Iron and Steel|Hydrogen": "Hydrogen"
+  "Price|Final Energy|Industry|Iron and Steel|Lignite": "Lignite"
+  "Price|Final Energy|Industry|Iron and Steel|Natural Gas": "Natural Gas"
+  
+  #"Price|Final Energy|Industry|Iron and Steel|Liquefied Petroleum Gas": "Liquefied Petroleum Gas"
+
+# ITOM Carrier Processing Strategy
+itom_carrier_settings:
+  Natural Gas:
+    variant: "pipeline"           # Variant a: Location-specific pipeline transport cost
+    itom_product_name: "natural_gas"
+  Electricity:
+    variant: "pipeline"           # Variant a: Location-specific pipeline transport cost
+    itom_product_name: "electricity"
+  Hydrogen:
+    variant: "pipeline_direct"    # Variant 3: Direct conversion (k$2015/toe -> €/GJ) & purge old modes
+    itom_product_name: "hydrogen"
+  Coal:
+    variant: "commodity"          # Variant b: Global commodity import technology
+    technology_names:
+      - "import_coking_coal"
+      - "import_PCI_coal"
+      - "import_coke"
+  Biomass:
+    variant: "commodity"          # Variant b: Global commodity import technology
+    technology_names: 
+      - "import_biomass"
+      - "import_charcoal"
+
+
+
+
+# Biomass Settings
+biomass_settings:
+  sheet_name: "FinalEnergyBiomass"
+  variable_name: "Final Energy|Industry|Iron and Steel|Biomass and Waste"
+  technology_name: "import_biomass"
+  region_name: "energy_center"
+  
+  # Conversion factor: 1 Mtoe = 41.868 PJ
+  mtoe_to_pj_factor: 41.868
+
+  time_periods:
+    2020: [2020, 2021, 2022, 2023, 2024]
+    2025: [2025, 2026, 2027, 2028, 2029]
+    2030: [2030, 2031, 2032, 2033, 2034]
+    2035: [2035, 2036, 2037, 2038, 2039]
+    2040: [2040, 2041, 2042, 2043, 2044]
+    2045: [2045, 2046, 2047, 2048, 2049]
+    2050: [2050, 2050, 2050, 2050, 2050]
+
+  european_regions:
+    - AUT
+    - BEL
+    - BGR
+    - HRV
+    - CYP
+    - CZE
+    - DNK
+    - EST
+    - FIN
+    - FRA
+    - DEU
+    - GRC
+    - HUN
+    - IRL
+    - ITA
+    - LVA
+    - LTU
+    - LUX
+    - MLT
+    - NLD
+    - POL
+    - PRT
+    - ROU
+    - SVK
+    - SVN
+    - ESP
+    - SWE
+    - GBR
