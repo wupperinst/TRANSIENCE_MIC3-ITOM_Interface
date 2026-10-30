@@ -7,8 +7,8 @@ Each interface reads data from one MIC3 module and writes it into the relevant s
 | Interface | MIC3 module | Data written to ITOM | Sector |
 |---|---|---|---|
 | [`ITOM_demand_interface`](ITOM_demand_interface) | MFA (material flow analysis) | Final steel demand and scrap availability | steel |
-| [`ITOM_Energy_Interface`](ITOM_Energy_Interface) | OPEN-PROM (energy system model) | Energy carrier prices and biomass availability | steel |
-| [`ITOM_ETS_Interface`](ITOM_ETS_Interface) | Carbon price projections (EU ETS) | CO₂ emissions penalty | all sectors |
+| [`ITOM_energy_interface`](ITOM_energy_interface) | OPEN-PROM (energy system model) | Energy carrier prices and biomass availability | steel |
+| [`ITOM_ets_interface`](ITOM_ets_interface) | Carbon price projections (EU ETS) | CO₂ emissions penalty | all sectors |
 
 ### Sector naming convention
 
@@ -23,10 +23,10 @@ ITOM_Steel_TRANSIENCE_baseline0_input.xlsx
         │  1. ITOM_demand_interface   (MFA output CSVs)
         ▼
 ITOM_Steel_TRANSIENCE_baseline0_input_MFA-update.xlsx
-        │  2. ITOM_Energy_Interface   (OPEN-PROM Excel export)
+        │  2. ITOM_energy_interface   (OPEN-PROM Excel export)
         ▼
 ITOM_Steel_TRANSIENCE_baseline0_input_MFA-Energy-update.xlsx
-        │  3. ITOM_ETS_Interface      (CarbonPrices.xlsx)
+        │  3. ITOM_ets_interface      (CarbonPrices.xlsx)
         ▼
 ITOM_Steel_TRANSIENCE_baseline0_input_MFA-Energy-ETS_update.xlsx
 ```
@@ -51,7 +51,7 @@ Activate the environment in the repository root, then run the scripts from insid
 
 ## 1. Demand and scrap availability (MFA)
 
-[`ITOM_demand_interface/`](ITOM_demand_interface) is a Python port of the R script `4_Demand and Scrap availability_october26-update.R` (Süheyb Bilici & Alexander Kling). The R file is kept for reference only and is not executed.
+[`ITOM_demand_interface/`](ITOM_demand_interface) converts MFA output into the steel demand and scrap availability inputs of the ITOM workbook.
 
 It runs in two steps:
 
@@ -83,7 +83,7 @@ See [`ITOM_demand_interface/CLAUDE.md`](ITOM_demand_interface/CLAUDE.md) for the
 
 ## 2. Energy prices and biomass availability (OPEN-PROM)
 
-[`ITOM_Energy_Interface/`](ITOM_Energy_Interface) reads an OPEN-PROM Excel export and updates two things in the ITOM workbook:
+[`ITOM_energy_interface/`](ITOM_energy_interface) reads an OPEN-PROM Excel export and updates two things in the ITOM workbook:
 
 1. **Energy prices** (`update_itom_steel_energy_prices.py`)
    - Prices are taken from the `PricesIndustry` sheet (variables `Price|Final Energy|Industry|Iron and Steel|*`) for the EU27 + UK countries.
@@ -99,15 +99,15 @@ See [`ITOM_demand_interface/CLAUDE.md`](ITOM_demand_interface/CLAUDE.md) for the
 Run the whole pipeline (prices first, then biomass, on one output file):
 
 ```bash
-cd ITOM_Energy_Interface
+cd ITOM_energy_interface
 python data_update_open_prom_to_itom_steel.py
 ```
 
-Everything is controlled by [`config_itom_steel.yaml`](ITOM_Energy_Interface/config_itom_steel.yaml): input and output file names, years, conversion factors, the ISO-3 → ISO-2 country mapping, the carrier mapping and the biomass settings. With `export_intermediate_csv: true`, the price indices are also written to `itom_steel_open_prom_relative_changes.csv`.
+Everything is controlled by [`config_itom_steel.yaml`](ITOM_energy_interface/config_itom_steel.yaml): input and output file names, years, conversion factors, the ISO-3 → ISO-2 country mapping, the carrier mapping and the biomass settings. With `export_intermediate_csv: true`, the price indices are also written to `itom_steel_open_prom_relative_changes.csv`.
 
 ## 3. Carbon price / ETS (emissions penalty)
 
-[`ITOM_ETS_Interface/`](ITOM_ETS_Interface) contains `TRANSIENCE_ITOM_ets_interface.py`. It reads the EU CO₂ price projection from `CarbonPrices.xlsx` (sheet `CarbonPrices`, region `EU`) and updates the `EmissionsPenalty` sheet of the ITOM workbook.
+[`ITOM_ets_interface/`](ITOM_ets_interface) contains `TRANSIENCE_ITOM_ets_interface.py`. It reads the EU CO₂ price projection from `CarbonPrices.xlsx` (sheet `CarbonPrices`, region `EU`) and updates the `EmissionsPenalty` sheet of the ITOM workbook.
 
 The input is averaged over 5-year windows (2025 → 2023–2027, …, 2050 → 2048–2050). The penalty for 2030–2050 is then scaled from the existing 2025 value and rounded to whole numbers. The method is set by `CALCULATION_METHOD` at the top of the script:
 
@@ -115,7 +115,7 @@ The input is averaged over 5-year windows (2025 → 2023–2027, …, 2050 → 2
 - `CHAIN`: `Value_t = Value_{t-1} × Mean_t / Mean_{t-1}`
 
 ```bash
-cd ITOM_ETS_Interface
+cd ITOM_ets_interface
 python TRANSIENCE_ITOM_ets_interface.py
 ```
 
@@ -131,15 +131,14 @@ The file paths (`INPUT_PATH`, `TARGET_PATH`, `OUTPUT_PATH`) are constants at the
 │   ├── mfa_itom_steel_product_mapping.xlsx
 │   ├── output_to_itom/             MFA output CSVs (input)
 │   ├── _model_data/                generated itom_steel_Demand.csv, itom_steel_Scrap.csv
-│   ├── 4_Demand and Scrap availability_october26-update.R   (reference only)
 │   └── CLAUDE.md
-├── ITOM_Energy_Interface/          OPEN-PROM → energy prices, biomass limit
+├── ITOM_energy_interface/          OPEN-PROM → energy prices, biomass limit
 │   ├── data_update_open_prom_to_itom_steel.py   (entry point)
 │   ├── update_itom_steel_energy_prices.py
 │   ├── update_itom_steel_biomass_limit.py
 │   ├── config_itom_steel.yaml
 │   └── OPEN-PROM-Baseline-*.xlsx
-└── ITOM_ETS_Interface/             CarbonPrices → emissions penalty
+└── ITOM_ets_interface/             CarbonPrices → emissions penalty
     ├── TRANSIENCE_ITOM_ets_interface.py
     └── CarbonPrices.xlsx
 ```
@@ -152,4 +151,4 @@ The file paths (`INPUT_PATH`, `TARGET_PATH`, `OUTPUT_PATH`) are constants at the
 
 ## Authors
 
-Developed in the TRANSIENCE project. The demand and scrap logic builds on an R script by Süheyb Bilici and Alexander Kling.
+Developed in the TRANSIENCE project. The demand and scrap logic builds on earlier work by Süheyb Bilici and Alexander Kling.

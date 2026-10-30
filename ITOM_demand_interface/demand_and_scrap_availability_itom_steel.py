@@ -1,4 +1,4 @@
-# ITOM steel: Python version of "4_Demand and Scrap availability_october26-update.R"
+# ITOM steel: converts MFA output into the steel demand and scrap availability inputs.
 # Reads the MFA output files from output_to_itom and writes itom_steel_Demand.csv and itom_steel_Scrap.csv for the ITOM steel model.
 
 from pathlib import Path
