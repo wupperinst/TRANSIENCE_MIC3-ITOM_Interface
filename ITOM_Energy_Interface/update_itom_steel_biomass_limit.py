@@ -3,7 +3,7 @@ import openpyxl
 import yaml
 from pathlib import Path
 
-def load_config(config_path: str = "config.yaml") -> dict:
+def load_config(config_path: str = "config_itom_steel.yaml") -> dict:
     """Load settings and parameters from external YAML configuration."""
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -43,7 +43,7 @@ def extract_and_aggregate_biomass_pj(config: dict) -> dict[int, float]:
     return period_totals_pj
 
 def run_biomass_limit_update(config: dict, aggregated_biomass_pj: dict[int, float] = None, source_excel_path: Path = None, target_excel_path: Path = None) -> None:
-    """Updates TotalTechnologyAnnualActivityUpperLimit worksheet in ITOM Excel file with PJ values."""
+    """Updates TotalTechnologyAnnualActivityUpperLimit worksheet in the ITOM steel Excel file with PJ values."""
     excel_in = source_excel_path or Path(config["paths"]["itom_input_excel"])
     excel_out = target_excel_path or Path(config["paths"]["itom_output_excel"])
     bio_cfg = config["biomass_settings"]
@@ -84,9 +84,9 @@ def run_biomass_limit_update(config: dict, aggregated_biomass_pj: dict[int, floa
             })
 
     wb.save(excel_out)
-    print(f"[Biomass] Updated ITOM Excel saved to: {excel_out.resolve()}")
+    print(f"[Biomass] Updated ITOM steel Excel saved to: {excel_out.resolve()}")
 
 if __name__ == "__main__":
-    cfg = load_config("config.yaml")
+    cfg = load_config("config_itom_steel.yaml")
     biomass_data_pj = extract_and_aggregate_biomass_pj(cfg)
     run_biomass_limit_update(cfg, biomass_data_pj)

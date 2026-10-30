@@ -1,5 +1,5 @@
-# Writes the new Demand and Scrap data (Demand.csv, Scrap.csv from demand_and_scrap_availability.py)
-# into the ITOM model input file and saves the result as a new file. Everything else is copied unchanged.
+# ITOM steel: writes the new Demand and Scrap data (itom_steel_Demand.csv, itom_steel_Scrap.csv from demand_and_scrap_availability_itom_steel.py)
+# into the ITOM steel model input file and saves the result as a new file. Everything else is copied unchanged.
 
 from copy import copy
 from pathlib import Path
@@ -46,7 +46,7 @@ wb = load_workbook(INPUT_XLSX)
 
 # 1. Demand: existing data is overwritten ######
 
-demand = read_csv2(DATA_DIR / "Demand.csv")
+demand = read_csv2(DATA_DIR / "itom_steel_Demand.csv")
 demand["Region"] = DEMAND_REGION
 demand = demand.sort_values(["Product", "Year"], kind="stable")
 
@@ -59,7 +59,7 @@ print(f"Demand: {len(demand)} rows written")
 
 # 2. Scrap: existing scrap availabilities are removed, all other rows are kept ######
 
-scrap = read_csv2(DATA_DIR / "Scrap.csv")
+scrap = read_csv2(DATA_DIR / "itom_steel_Scrap.csv")
 scrap["Region"] = SCRAP_REGION
 new_rows = scrap[["Region", "Technology", "Year", "TotalTechnologyAnnualActivityUpperLimit"]].values.tolist()
 

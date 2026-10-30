@@ -2,21 +2,21 @@ from pathlib import Path
 import yaml
 
 # Import functions from consistently named modules
-from update_itom_energy_prices import compute_open_prom_price_indices, run_energy_prices_update
-from update_itom_biomass_limit import extract_and_aggregate_biomass_pj, run_biomass_limit_update
+from update_itom_steel_energy_prices import compute_open_prom_price_indices, run_energy_prices_update
+from update_itom_steel_biomass_limit import extract_and_aggregate_biomass_pj, run_biomass_limit_update
 
-def load_config(config_path: str = "config.yaml") -> dict:
+def load_config(config_path: str = "config_itom_steel.yaml") -> dict:
     """Load settings and parameters from external YAML configuration."""
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 def run_pipeline():
-    """Executes both Energy Price and Biomass updates sequentially on a single ITOM Excel output file."""
+    """Executes both Energy Price and Biomass updates sequentially on a single ITOM steel Excel output file."""
     print("="*60)
-    print("   STARTING INTEGRATED OPEN-PROM TO ITOM DATA PIPELINE")
+    print("   STARTING INTEGRATED OPEN-PROM TO ITOM STEEL DATA PIPELINE")
     print("="*60)
     
-    cfg = load_config("config.yaml")
+    cfg = load_config("config_itom_steel.yaml")
     
     itom_input = Path(cfg["paths"]["itom_input_excel"])
     itom_output = Path(cfg["paths"]["itom_output_excel"])
@@ -54,7 +54,7 @@ def run_pipeline():
 
     print("\n" + "="*60)
     print("   SUCCESSFULLY COMPLETED ALL UPDATES!")
-    print(f"   Final Combined ITOM File: {itom_output.resolve()}")
+    print(f"   Final Combined ITOM Steel File: {itom_output.resolve()}")
     print("="*60)
 
 if __name__ == "__main__":

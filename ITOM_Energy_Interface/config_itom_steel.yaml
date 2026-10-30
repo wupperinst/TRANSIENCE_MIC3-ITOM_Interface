@@ -1,9 +1,10 @@
+# ITOM steel model: OPEN-PROM energy prices and biomass availability (config for the *_itom_steel.py and update_itom_steel_*.py scripts)
 paths:
   open_prom_excel: "OPEN-PROM-Baseline-2026.10.16.xlsx"
   open_prom_price_sheet: "PricesIndustry"
   itom_input_excel: "ITOM_Steel_TRANSIENCE_baseline0_input_MFA-update.xlsx"
   itom_output_excel: "ITOM_Steel_TRANSIENCE_baseline0_input_MFA-Energy-update.xlsx"
-  output_relative_changes: "open_prom_relative_changes.csv"
+  output_relative_changes: "itom_steel_open_prom_relative_changes.csv"
 
 # Enable/disable intermediate CSV export for energy price indices
 export_intermediate_csv: true

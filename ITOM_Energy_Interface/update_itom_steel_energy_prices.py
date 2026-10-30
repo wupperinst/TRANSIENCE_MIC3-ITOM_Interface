@@ -4,7 +4,7 @@ import openpyxl
 import yaml
 from pathlib import Path
 
-def load_config(config_path: str = "config.yaml") -> dict:
+def load_config(config_path: str = "config_itom_steel.yaml") -> dict:
     """Load settings and mapping definitions from external YAML file."""
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -68,7 +68,7 @@ def compute_open_prom_price_indices(config: dict) -> pd.DataFrame:
     return df_indexed
 
 def run_energy_prices_update(config: dict, open_prom_indices: pd.DataFrame = None, source_excel_path: Path = None, target_excel_path: Path = None) -> None:
-    """Updates ITOM Excel file for energy prices (Pipeline Index, Commodity Index, and Pipeline Direct)."""
+    """Updates the ITOM steel Excel file for energy prices (Pipeline Index, Commodity Index, and Pipeline Direct)."""
     excel_in = source_excel_path or Path(config["paths"]["itom_input_excel"])
     excel_out = target_excel_path or Path(config["paths"]["itom_output_excel"])
     base_year = int(config["base_year"])
@@ -408,10 +408,10 @@ def run_energy_prices_update(config: dict, open_prom_indices: pd.DataFrame = Non
                 })
 
     wb.save(excel_out)
-    print(f"[Prices] Updated ITOM Excel saved to: {excel_out.resolve()} (Modified Commodity Entries: {modified_commodities_count})")
+    print(f"[Prices] Updated ITOM steel Excel saved to: {excel_out.resolve()} (Modified Commodity Entries: {modified_commodities_count})")
 
 if __name__ == "__main__":
-    cfg = load_config("config.yaml")
+    cfg = load_config("config_itom_steel.yaml")
     indices_df = compute_open_prom_price_indices(cfg)
     if cfg.get("export_intermediate_csv", False):
         csv_out_path = Path(cfg["paths"]["output_relative_changes"])
