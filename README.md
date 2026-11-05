@@ -79,7 +79,6 @@ python update_itom_steel_input.py   # ~35 s
 
 Step 1 must run before step 2. The two scripts resolve their paths relative to their own location. Region names are set by the constants `SOURCE_REGION` and `MODEL_REGION` at the top of `demand_and_scrap_availability_itom_steel.py`.
 
-See [`ITOM_demand_interface/CLAUDE.md`](ITOM_demand_interface/CLAUDE.md) for the detailed logic, comparison against the previous data and open points.
 
 ## 2. Energy prices and biomass availability (OPEN-PROM)
 
